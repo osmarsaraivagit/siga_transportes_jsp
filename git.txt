@@ -1,0 +1,11 @@
+echo # siga_transportes_jsp  README.md
+git init
+git add README.md
+git commit -m first commit
+git branch -M main
+git remote add origin httpsgithub.comosmarsaraivagitsiga_transportes_jsp.git
+git push -u origin main
+
+git remote add origin https://github.com/osmarsaraivagit/siga_transportes_jsp.git
+git branch -M main
+git push -u origin main
