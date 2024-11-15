@@ -1,7 +1,8 @@
-<%@page import="util.Upload" %>
+<%@page import="br.com.sigatransportes.util.Conexao"%>
+<%@page import="br.com.sigatransportes.util.Upload"%>
 <%@page import="java.sql.*"%>
 <%@page import="com.mysql.jdbc.Driver"%>
-<%@page import="util.Conexao"%>
+
 
 
 
@@ -21,7 +22,7 @@
     Upload up = new Upload();
 
 //definir qual a pasta a ser salva
-    up.setFolderUpload("sistema/img/profiles");
+    up.setFolderUpload("../img/profiles");
 
     if (up.formProcess(getServletContext(), request)) {
 
@@ -47,7 +48,7 @@
         //INSERIR OS DADOS NO BANCO DE DADOS
         try {
             
-            //verificar se o campo é vazio
+            //verificar se o campo ï¿½ vazio
             if(nome.equals("")){
                 out.print("Preencha o Campo Nome!!");
                 return;
@@ -66,7 +67,7 @@
             while (rs.next()) {
                 rs.getRow();
                 if (rs.getRow() > 0) {
-                    out.print("CPF Já Cadastrado!");
+                    out.print("CPF Jï¿½ Cadastrado!");
                     return;
                 }
             }
