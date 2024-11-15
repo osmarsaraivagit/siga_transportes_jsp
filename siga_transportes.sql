@@ -1,661 +1,906 @@
--- MySQL dump 10.13  Distrib 5.7.9, for Win64 (x86_64)
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1    Database: siga_transportes
--- ------------------------------------------------------
--- Server version	5.6.31-log
+-- Host: 127.0.0.1
+-- Tempo de geração: 14/06/2024 às 12:42
+-- Versão do servidor: 10.4.32-MariaDB
+-- Versão do PHP: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
--- Table structure for table `cidades`
+-- Banco de dados: `siga_transportes`
 --
 
-DROP TABLE IF EXISTS `cidades`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cidades` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
-  `nome` varchar(50) NOT NULL,
-  `estado_codigo` bigint(20) NOT NULL,
-  `pais_codigo` bigint(20) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  KEY `FK_f2wwf45wgk3q4x43cscrjgi3r` (`estado_codigo`),
-  KEY `FK_qp8p1gkh2y61hs9yhifihjnwj` (`pais_codigo`),
-  CONSTRAINT `FK_f2wwf45wgk3q4x43cscrjgi3r` FOREIGN KEY (`estado_codigo`) REFERENCES `estados` (`codigo`),
-  CONSTRAINT `FK_qp8p1gkh2y61hs9yhifihjnwj` FOREIGN KEY (`pais_codigo`) REFERENCES `paises` (`codigo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `cidades`
+-- Estrutura para tabela `acertos_viagens`
 --
 
-LOCK TABLES `cidades` WRITE;
-/*!40000 ALTER TABLE `cidades` DISABLE KEYS */;
-/*!40000 ALTER TABLE `cidades` ENABLE KEYS */;
-UNLOCK TABLES;
+CREATE TABLE `acertos_viagens` (
+  `id` int(20) NOT NULL,
+  `fk_lancar_viagens_id` bigint(20) NOT NULL,
+  `creditar` decimal(10,2) NOT NULL,
+  `debitar` decimal(10,2) NOT NULL,
+  `historico` varchar(100) NOT NULL,
+  `fk_plano_contas_id` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `clientes`
+-- Estrutura para tabela `clientes`
 --
 
-DROP TABLE IF EXISTS `clientes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `clientes` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint(20) NOT NULL,
+  `nome` varchar(80) NOT NULL,
   `CNPJ` varchar(60) NOT NULL,
-  `dataCadastro` date NOT NULL,
+  `ie` varchar(60) NOT NULL,
   `email` varchar(100) NOT NULL,
   `endereco` varchar(80) NOT NULL,
-  `ie` varchar(60) NOT NULL,
-  `nome` varchar(80) NOT NULL,
   `telefone` varchar(60) NOT NULL,
-  `cidade_codigo` bigint(20) NOT NULL,
-  `estado_codigo` bigint(20) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  UNIQUE KEY `UK_3nns50py9kwl9a4ecbi6b6er3` (`CNPJ`),
-  UNIQUE KEY `UK_5amw89hu7w6ql52erkn8x5j1f` (`ie`),
-  KEY `FK_biydr2fg5b15iu8j44vi2t9jb` (`cidade_codigo`),
-  KEY `FK_idh0tuy4iho5cebonu5u5t3ek` (`estado_codigo`),
-  CONSTRAINT `FK_biydr2fg5b15iu8j44vi2t9jb` FOREIGN KEY (`cidade_codigo`) REFERENCES `cidades` (`codigo`),
-  CONSTRAINT `FK_idh0tuy4iho5cebonu5u5t3ek` FOREIGN KEY (`estado_codigo`) REFERENCES `estados` (`codigo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `data_cadastro` date NOT NULL,
+  `fk_cidades_id` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- Dumping data for table `clientes`
+-- Despejando dados para a tabela `clientes`
 --
 
-LOCK TABLES `clientes` WRITE;
-/*!40000 ALTER TABLE `clientes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `clientes` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `clientes` (`id`, `nome`, `CNPJ`, `ie`, `email`, `endereco`, `telefone`, `data_cadastro`, `fk_cidades_id`) VALUES
+(37, 'SADA TRANSPORTES LTDA', '11.111.111/1111-11', '1111111111111', 'sada@gmail.com', 'FIAT', '(31) 65678-7894', '2023-10-21', 44);
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `destinos`
+-- Estrutura para tabela `documentos`
 --
 
-DROP TABLE IF EXISTS `destinos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `destinos` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
-  `cidade_codigo` bigint(20) NOT NULL,
-  `estado_codigo` bigint(20) NOT NULL,
-  `pais_codigo` bigint(20) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  KEY `FK_4fmvqtmxj8t12ita1hql46oan` (`cidade_codigo`),
-  KEY `FK_3i2soocdnh0285u8mbstgmkbf` (`estado_codigo`),
-  KEY `FK_abs4vqp13vckwohetwyl9edbg` (`pais_codigo`),
-  CONSTRAINT `FK_3i2soocdnh0285u8mbstgmkbf` FOREIGN KEY (`estado_codigo`) REFERENCES `estados` (`codigo`),
-  CONSTRAINT `FK_4fmvqtmxj8t12ita1hql46oan` FOREIGN KEY (`cidade_codigo`) REFERENCES `cidades` (`codigo`),
-  CONSTRAINT `FK_abs4vqp13vckwohetwyl9edbg` FOREIGN KEY (`pais_codigo`) REFERENCES `paises` (`codigo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `destinos`
---
-
-LOCK TABLES `destinos` WRITE;
-/*!40000 ALTER TABLE `destinos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `destinos` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `documentos`
---
-
-DROP TABLE IF EXISTS `documentos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `documentos` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
-  `nome` varchar(80) NOT NULL,
-  `numero` int(11) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  UNIQUE KEY `UK_3c3nc11elc9b794mfrbn3nv9d` (`nome`),
-  UNIQUE KEY `UK_486dulg1pqlxxp1h8ifsjqcdw` (`numero`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `id` bigint(20) NOT NULL,
+  `nome_doc` varchar(80) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- Dumping data for table `documentos`
+-- Despejando dados para a tabela `documentos`
 --
 
-LOCK TABLES `documentos` WRITE;
-/*!40000 ALTER TABLE `documentos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `documentos` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `documentos` (`id`, `nome_doc`) VALUES
+(1, 'Cupom Fiscal'),
+(4, 'Nota Fiscal'),
+(5, 'Recibo'),
+(7, 'PIX3'),
+(8, 'CRLV'),
+(9, 'PERMISSO');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `empresas`
+-- Estrutura para tabela `doc_veiculos`
 --
 
-DROP TABLE IF EXISTS `empresas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `doc_veiculos` (
+  `id` int(11) NOT NULL,
+  `nome_doc` varchar(60) NOT NULL,
+  `data_realizado` date NOT NULL,
+  `data_vencimento` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `empresas`
+--
+
 CREATE TABLE `empresas` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
-  `CNPJ` varchar(80) NOT NULL,
-  `dataCadastro` date NOT NULL,
-  `email` varchar(80) NOT NULL,
-  `endereco` varchar(80) NOT NULL,
-  `fone` varchar(30) NOT NULL,
-  `ie` varchar(80) NOT NULL,
+  `id` bigint(20) NOT NULL,
   `nome` varchar(80) NOT NULL,
-  `cidade_codigo` bigint(20) NOT NULL,
-  `estado_codigo` bigint(20) NOT NULL,
-  `responsavel_codigo` bigint(20) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  UNIQUE KEY `UK_kh61ytsg6nr4ogpyhs8x6lu42` (`CNPJ`),
-  UNIQUE KEY `UK_avmac2r40586w2svbe5spnjsb` (`ie`),
-  KEY `FK_ekaqpyw307i3mard73jts16me` (`cidade_codigo`),
-  KEY `FK_f5bd3gpe296yl3xsiye83x6uw` (`estado_codigo`),
-  KEY `FK_gpv0mu4bw1sdjw4mvajrjltek` (`responsavel_codigo`),
-  CONSTRAINT `FK_ekaqpyw307i3mard73jts16me` FOREIGN KEY (`cidade_codigo`) REFERENCES `cidades` (`codigo`),
-  CONSTRAINT `FK_f5bd3gpe296yl3xsiye83x6uw` FOREIGN KEY (`estado_codigo`) REFERENCES `estados` (`codigo`),
-  CONSTRAINT `FK_gpv0mu4bw1sdjw4mvajrjltek` FOREIGN KEY (`responsavel_codigo`) REFERENCES `funcionarios` (`codigo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `empresas`
---
-
-LOCK TABLES `empresas` WRITE;
-/*!40000 ALTER TABLE `empresas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `empresas` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `estados`
---
-
-DROP TABLE IF EXISTS `estados`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `estados` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
-  `nome` varchar(50) NOT NULL,
-  `sigla` varchar(2) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  UNIQUE KEY `UK_lwqadf33rdx51e2otolcbyo1` (`nome`),
-  UNIQUE KEY `UK_7vpklxk68egwg03v7yoarpr88` (`sigla`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `estados`
---
-
-LOCK TABLES `estados` WRITE;
-/*!40000 ALTER TABLE `estados` DISABLE KEYS */;
-/*!40000 ALTER TABLE `estados` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `fornecedores`
---
-
-DROP TABLE IF EXISTS `fornecedores`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `fornecedores` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
   `CNPJ` varchar(80) NOT NULL,
-  `dataCadastro` date NOT NULL,
-  `email` varchar(80) NOT NULL,
-  `endereco` varchar(80) NOT NULL,
-  `fone` varchar(30) NOT NULL,
   `ie` varchar(80) NOT NULL,
-  `nome` varchar(80) NOT NULL,
+  `email` varchar(80) NOT NULL,
+  `endereco` varchar(100) NOT NULL,
+  `fk_cidades_id` bigint(20) NOT NULL,
+  `fone` varchar(30) NOT NULL,
   `responsavel` varchar(80) NOT NULL,
-  `cidade_codigo` bigint(20) NOT NULL,
-  `estado_codigo` bigint(20) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  UNIQUE KEY `UK_ckvx71oosj4ujr1oaxt69c9kl` (`CNPJ`),
-  UNIQUE KEY `UK_ebycufwthn6p3cbfav283uhvr` (`ie`),
-  KEY `FK_1m7g8c1a9aq2ohfhapl1bqn4g` (`cidade_codigo`),
-  KEY `FK_n3i3svntqp313pr4poou898jr` (`estado_codigo`),
-  CONSTRAINT `FK_1m7g8c1a9aq2ohfhapl1bqn4g` FOREIGN KEY (`cidade_codigo`) REFERENCES `cidades` (`codigo`),
-  CONSTRAINT `FK_n3i3svntqp313pr4poou898jr` FOREIGN KEY (`estado_codigo`) REFERENCES `estados` (`codigo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `data_inicio` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- Dumping data for table `fornecedores`
+-- Despejando dados para a tabela `empresas`
 --
 
-LOCK TABLES `fornecedores` WRITE;
-/*!40000 ALTER TABLE `fornecedores` DISABLE KEYS */;
-/*!40000 ALTER TABLE `fornecedores` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `empresas` (`id`, `nome`, `CNPJ`, `ie`, `email`, `endereco`, `fk_cidades_id`, `fone`, `responsavel`, `data_inicio`) VALUES
+(1, 'fsdfs', '23.131', '312312', 'FSDF@FAFAS', '321312', 43, '321321312312', '312321', '2023-10-25'),
+(2, 'Gloria Transportes', '03.252.789/0001-66', '1247917891254', 'gloria.transportes@yahoo.com', 'Rua 1', 43, '31356565', 'Teste1', '1989-08-28');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `frotas`
+-- Estrutura para tabela `exames`
 --
 
-DROP TABLE IF EXISTS `frotas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `exames` (
+  `id` int(11) NOT NULL,
+  `nome_exame` varchar(60) NOT NULL,
+  `cid` varchar(30) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Despejando dados para a tabela `exames`
+--
+
+INSERT INTO `exames` (`id`, `nome_exame`, `cid`) VALUES
+(1, 'Admissional', '0'),
+(3, 'Demissional', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `fornecedores`
+--
+
+CREATE TABLE `fornecedores` (
+  `id` bigint(20) NOT NULL,
+  `nome` varchar(80) NOT NULL,
+  `CNPJ` varchar(80) NOT NULL,
+  `ie` varchar(80) NOT NULL,
+  `email` varchar(80) NOT NULL,
+  `endereco` varchar(80) NOT NULL,
+  `fone` varchar(30) NOT NULL,
+  `responsavel` varchar(80) NOT NULL,
+  `data_cadastro` date NOT NULL,
+  `fk_cidades_id` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Despejando dados para a tabela `fornecedores`
+--
+
+INSERT INTO `fornecedores` (`id`, `nome`, `CNPJ`, `ie`, `email`, `endereco`, `fone`, `responsavel`, `data_cadastro`, `fk_cidades_id`) VALUES
+(2, 'GW Pneus editado', '11.111.111/1111-11', '211111111123', 'FSDF@FAFAS', 'dasd2121', '1231232', 'fdsafas', '2023-09-24', 43);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `frotas`
+--
+
 CREATE TABLE `frotas` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
-  `dataCadastro` date NOT NULL,
-  `nomeFrota` varchar(20) NOT NULL,
-  `empresa_codigo` bigint(20) NOT NULL,
-  `situacao_codigo` bigint(20) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  UNIQUE KEY `UK_2rpmd9y3emgpj7itrhe9p8rry` (`nomeFrota`),
-  KEY `FK_tm2jg52q67u48d8yhbjaxm79j` (`empresa_codigo`),
-  KEY `FK_j6ammkp2968nxbhk0rfyil1t6` (`situacao_codigo`),
-  CONSTRAINT `FK_j6ammkp2968nxbhk0rfyil1t6` FOREIGN KEY (`situacao_codigo`) REFERENCES `situacoes` (`codigo`),
-  CONSTRAINT `FK_tm2jg52q67u48d8yhbjaxm79j` FOREIGN KEY (`empresa_codigo`) REFERENCES `empresas` (`codigo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `id` bigint(20) NOT NULL,
+  `nome_frota` varchar(20) NOT NULL,
+  `fk_empresas_id` bigint(20) NOT NULL,
+  `fk_situacoes_id` bigint(20) NOT NULL,
+  `data_cadastro` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- Dumping data for table `frotas`
+-- Despejando dados para a tabela `frotas`
 --
 
-LOCK TABLES `frotas` WRITE;
-/*!40000 ALTER TABLE `frotas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `frotas` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `frotas` (`id`, `nome_frota`, `fk_empresas_id`, `fk_situacoes_id`, `data_cadastro`) VALUES
+(2, 'F2254', 2, 6, '2024-03-17'),
+(3, 'F2212', 1, 6, '2024-03-31');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `funcao`
+-- Estrutura para tabela `funcionarios`
 --
 
-DROP TABLE IF EXISTS `funcao`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `funcao` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
-  `codigoFuncao` varchar(20) NOT NULL,
-  `nome` varchar(40) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  UNIQUE KEY `UK_ki6670spvcit44t478n4ubkaq` (`codigoFuncao`),
-  UNIQUE KEY `UK_5tuseq32wi3mrtgtlns0pvu5v` (`nome`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `funcao`
---
-
-LOCK TABLES `funcao` WRITE;
-/*!40000 ALTER TABLE `funcao` DISABLE KEYS */;
-/*!40000 ALTER TABLE `funcao` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `funcionarios`
---
-
-DROP TABLE IF EXISTS `funcionarios`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `funcionarios` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
-  `cpf` varchar(50) NOT NULL,
-  `dataAdmissao` date NOT NULL,
-  `dataDemissao` date DEFAULT NULL,
+  `id` bigint(20) NOT NULL,
+  `nome` varchar(80) NOT NULL,
+  `fk_empresa_id` bigint(20) NOT NULL,
+  `CPF` varchar(50) NOT NULL,
+  `PIS` varchar(30) NOT NULL,
+  `data_admissao` date NOT NULL,
   `email` varchar(100) NOT NULL,
   `endereco` varchar(90) NOT NULL,
-  `nome` varchar(80) NOT NULL,
-  `obs` varchar(150) DEFAULT NULL,
-  `pis` varchar(30) NOT NULL,
+  `fk_funcao_id` bigint(20) NOT NULL,
   `telefone` varchar(60) NOT NULL,
-  `cidade_codigo` bigint(20) NOT NULL,
-  `estado_codigo` bigint(20) NOT NULL,
-  `funcao_codigo` bigint(20) NOT NULL,
-  `situacao_codigo` bigint(20) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  UNIQUE KEY `UK_8c4ljj9790y60nbe6vpue6a15` (`cpf`),
-  UNIQUE KEY `UK_65vwfbkuvtdqwb98gyfecbf0q` (`pis`),
-  KEY `FK_g7p4bs353x28sq9069xrwphe7` (`cidade_codigo`),
-  KEY `FK_i9yje0t6e8i6lwnm184yagsb2` (`estado_codigo`),
-  KEY `FK_16wd0iw30kod129xeugs1brjg` (`funcao_codigo`),
-  KEY `FK_t0ukey4u7380lj0vs5gvudhap` (`situacao_codigo`),
-  CONSTRAINT `FK_16wd0iw30kod129xeugs1brjg` FOREIGN KEY (`funcao_codigo`) REFERENCES `funcao` (`codigo`),
-  CONSTRAINT `FK_g7p4bs353x28sq9069xrwphe7` FOREIGN KEY (`cidade_codigo`) REFERENCES `cidades` (`codigo`),
-  CONSTRAINT `FK_i9yje0t6e8i6lwnm184yagsb2` FOREIGN KEY (`estado_codigo`) REFERENCES `estados` (`codigo`),
-  CONSTRAINT `FK_t0ukey4u7380lj0vs5gvudhap` FOREIGN KEY (`situacao_codigo`) REFERENCES `situacoes` (`codigo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `salario` decimal(10,2) NOT NULL,
+  `fk_cidades_id` bigint(20) NOT NULL,
+  `fk_situacoes_id` bigint(20) NOT NULL,
+  `data_cadastro` date NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- Dumping data for table `funcionarios`
+-- Despejando dados para a tabela `funcionarios`
 --
 
-LOCK TABLES `funcionarios` WRITE;
-/*!40000 ALTER TABLE `funcionarios` DISABLE KEYS */;
-/*!40000 ALTER TABLE `funcionarios` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `funcionarios` (`id`, `nome`, `fk_empresa_id`, `CPF`, `PIS`, `data_admissao`, `email`, `endereco`, `fk_funcao_id`, `telefone`, `salario`, `fk_cidades_id`, `fk_situacoes_id`, `data_cadastro`) VALUES
+(4, 'Teste edt', 2, '132.434.242-34', '423423423', '2024-03-17', '12fsaf@ga.com', 'Rua teste, 45, Guarjo,', 3, '(42) 34234-0000', 3154.58, 44, 6, '2024-03-17'),
+(5, 'Fulano', 2, '123.232.32', '2131', '2024-03-17', 'oit@fas.com', 'Rua oese tres carmos, Bairro Centro. CEP:354871-000', 3, '(32) 13423-423', 3568.87, 44, 6, '2024-03-17');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `lancarmanutencoes`
+-- Estrutura para tabela `funcoes`
 --
 
-DROP TABLE IF EXISTS `lancarmanutencoes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `lancarmanutencoes` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `funcoes` (
+  `id` bigint(20) NOT NULL,
+  `nome` varchar(60) NOT NULL,
+  `codigo` varchar(40) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Despejando dados para a tabela `funcoes`
+--
+
+INSERT INTO `funcoes` (`id`, `nome`, `codigo`) VALUES
+(1, 'Cegonheiro', '2342'),
+(3, 'Soldador', '48757'),
+(5, 'Motorista', 'q12321');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `lancar_baixa_veiculos`
+--
+
+CREATE TABLE `lancar_baixa_veiculos` (
+  `id` bigint(20) NOT NULL,
+  `fk_veiculos_id` bigint(20) NOT NULL,
+  `data_venda` date NOT NULL,
+  `km_final` int(11) NOT NULL,
+  `comprador` varchar(60) NOT NULL,
+  `fone_comprador` varchar(40) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `lancar_contabilidade`
+--
+
+CREATE TABLE `lancar_contabilidade` (
+  `id` bigint(20) NOT NULL,
   `data` date NOT NULL,
+  `debitar` decimal(10,2) NOT NULL,
+  `creditar` decimal(10,2) NOT NULL,
   `historico` varchar(100) NOT NULL,
-  `obs` varchar(150) DEFAULT NULL,
-  `valor` decimal(12,2) NOT NULL,
-  `conta_codigo` bigint(20) NOT NULL,
-  `documento_codigo` bigint(20) NOT NULL,
-  `empresa_codigo` bigint(20) NOT NULL,
-  `fornecedor_codigo` bigint(20) NOT NULL,
-  `veiculo_codigo` bigint(20) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  KEY `FK_2pbj33orii35aec6jvcbiapr7` (`conta_codigo`),
-  KEY `FK_csj83j5ntw0v2kl503n0m7xxy` (`documento_codigo`),
-  KEY `FK_qxysc8m7eccax4w6njf4jelc4` (`empresa_codigo`),
-  KEY `FK_aqlptfo6ddjcfkjkbxdr6nsl2` (`fornecedor_codigo`),
-  KEY `FK_opwhn16mxhujwxp7bo3reb78f` (`veiculo_codigo`),
-  CONSTRAINT `FK_2pbj33orii35aec6jvcbiapr7` FOREIGN KEY (`conta_codigo`) REFERENCES `planocontas` (`codigo`),
-  CONSTRAINT `FK_aqlptfo6ddjcfkjkbxdr6nsl2` FOREIGN KEY (`fornecedor_codigo`) REFERENCES `fornecedores` (`codigo`),
-  CONSTRAINT `FK_csj83j5ntw0v2kl503n0m7xxy` FOREIGN KEY (`documento_codigo`) REFERENCES `documentos` (`codigo`),
-  CONSTRAINT `FK_opwhn16mxhujwxp7bo3reb78f` FOREIGN KEY (`veiculo_codigo`) REFERENCES `veiculos` (`codigo`),
-  CONSTRAINT `FK_qxysc8m7eccax4w6njf4jelc4` FOREIGN KEY (`empresa_codigo`) REFERENCES `empresas` (`codigo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `fk_plano_contas_id` bigint(20) NOT NULL,
+  `fk_documento_id` bigint(20) NOT NULL,
+  `fk_empresa_id` bigint(20) NOT NULL,
+  `fk_fornecedor_id` bigint(20) NOT NULL,
+  `fk_veiculos_id` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `lancarmanutencoes`
+-- Estrutura para tabela `lancar_ferias`
 --
 
-LOCK TABLES `lancarmanutencoes` WRITE;
-/*!40000 ALTER TABLE `lancarmanutencoes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `lancarmanutencoes` ENABLE KEYS */;
-UNLOCK TABLES;
+CREATE TABLE `lancar_ferias` (
+  `id` int(20) NOT NULL,
+  `fk_funiconarios_id` bigint(20) NOT NULL,
+  `data_inicio` date NOT NULL,
+  `data_fim` date NOT NULL,
+  `ano_referente` date NOT NULL,
+  `valor` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `lancarviagens`
+-- Estrutura para tabela `lancar_financeiro_viagens`
 --
 
-DROP TABLE IF EXISTS `lancarviagens`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `lancarviagens` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
-  `crtc` varchar(40) NOT NULL,
+CREATE TABLE `lancar_financeiro_viagens` (
+  `id` bigint(20) NOT NULL,
+  `fk_lancar_viagens_id` bigint(20) NOT NULL,
+  `creditar` decimal(8,2) NOT NULL,
+  `debitar` decimal(8,2) NOT NULL,
+  `historico` varchar(100) NOT NULL,
+  `fk_plano_contas_id` bigint(20) NOT NULL,
+  `fk_documento_id` bigint(20) NOT NULL,
+  `fk_fornecedor_id` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `lancar_viagens`
+--
+
+CREATE TABLE `lancar_viagens` (
+  `id` bigint(20) NOT NULL,
+  `crtc` varchar(30) NOT NULL,
   `data` date NOT NULL,
+  `fk_frota_id` bigint(20) NOT NULL,
+  `fk_motorista_id` bigint(20) NOT NULL,
+  `fk_origem_id` bigint(20) NOT NULL,
+  `fk_destino_id` bigint(20) NOT NULL,
   `kmInicial` int(11) NOT NULL,
-  `obs` varchar(150) DEFAULT NULL,
+  `kmFinal` int(11) NOT NULL,
+  `kmTotal` bigint(30) NOT NULL,
+  `litragem` double NOT NULL,
   `qtdeveiculos` int(11) NOT NULL,
-  `status` varchar(20) DEFAULT NULL,
-  `destino_codigo` bigint(20) NOT NULL,
-  `empresa_codigo` bigint(20) NOT NULL,
-  `frota_codigo` bigint(20) NOT NULL,
-  `motorista_codigo` bigint(20) NOT NULL,
-  `origem_codigo` bigint(20) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  UNIQUE KEY `UK_74eadfcf7eybebl9isnter6xm` (`status`),
-  KEY `FK_vmoiw2vk729vpaiy1mbqiddu` (`destino_codigo`),
-  KEY `FK_6bmjdy748u31bj7h67t4sguoq` (`empresa_codigo`),
-  KEY `FK_nwy4b86krnhbcqdmlpfrwecn4` (`frota_codigo`),
-  KEY `FK_i9gvvojss1nphrrfh3keu7a0l` (`motorista_codigo`),
-  KEY `FK_drkp8j09nsncparffe322twvv` (`origem_codigo`),
-  CONSTRAINT `FK_6bmjdy748u31bj7h67t4sguoq` FOREIGN KEY (`empresa_codigo`) REFERENCES `empresas` (`codigo`),
-  CONSTRAINT `FK_drkp8j09nsncparffe322twvv` FOREIGN KEY (`origem_codigo`) REFERENCES `origens` (`codigo`),
-  CONSTRAINT `FK_i9gvvojss1nphrrfh3keu7a0l` FOREIGN KEY (`motorista_codigo`) REFERENCES `funcionarios` (`codigo`),
-  CONSTRAINT `FK_nwy4b86krnhbcqdmlpfrwecn4` FOREIGN KEY (`frota_codigo`) REFERENCES `frotas` (`codigo`),
-  CONSTRAINT `FK_vmoiw2vk729vpaiy1mbqiddu` FOREIGN KEY (`destino_codigo`) REFERENCES `origens` (`codigo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `fk_empresa_id` bigint(20) NOT NULL,
+  `obs` varchar(100) NOT NULL,
+  `status` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `lancarviagens`
+-- Estrutura para tabela `localidades`
 --
 
-LOCK TABLES `lancarviagens` WRITE;
-/*!40000 ALTER TABLE `lancarviagens` DISABLE KEYS */;
-/*!40000 ALTER TABLE `lancarviagens` ENABLE KEYS */;
-UNLOCK TABLES;
+CREATE TABLE `localidades` (
+  `id` bigint(20) NOT NULL,
+  `cidade` varchar(50) NOT NULL,
+  `estado` varchar(2) NOT NULL,
+  `pais` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- Table structure for table `origens`
+-- Despejando dados para a tabela `localidades`
 --
 
-DROP TABLE IF EXISTS `origens`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `origens` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
-  `cidade_codigo` bigint(20) NOT NULL,
-  `estado_codigo` bigint(20) NOT NULL,
-  `pais_codigo` bigint(20) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  KEY `FK_mbjrw7hv4b9i0m3ukqdif9gqa` (`cidade_codigo`),
-  KEY `FK_geajla658970ywue87oo77aii` (`estado_codigo`),
-  KEY `FK_bu0affxdts05bw39ktvb6wxfx` (`pais_codigo`),
-  CONSTRAINT `FK_bu0affxdts05bw39ktvb6wxfx` FOREIGN KEY (`pais_codigo`) REFERENCES `paises` (`codigo`),
-  CONSTRAINT `FK_geajla658970ywue87oo77aii` FOREIGN KEY (`estado_codigo`) REFERENCES `estados` (`codigo`),
-  CONSTRAINT `FK_mbjrw7hv4b9i0m3ukqdif9gqa` FOREIGN KEY (`cidade_codigo`) REFERENCES `cidades` (`codigo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+INSERT INTO `localidades` (`id`, `cidade`, `estado`, `pais`) VALUES
+(43, 'Betim', 'MG', 'Brasil'),
+(44, 'BELO HORIZONTE', 'MG', 'BRASIL');
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `origens`
+-- Estrutura para tabela `plano_contas`
 --
 
-LOCK TABLES `origens` WRITE;
-/*!40000 ALTER TABLE `origens` DISABLE KEYS */;
-/*!40000 ALTER TABLE `origens` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `paises`
---
-
-DROP TABLE IF EXISTS `paises`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `paises` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
-  `nome` varchar(50) NOT NULL,
-  `sigla` varchar(2) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  UNIQUE KEY `UK_kq9o8foal3am2q42i7yys5ycv` (`nome`),
-  UNIQUE KEY `UK_5nqss02pq56tim4sts7e5y7gg` (`sigla`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `paises`
---
-
-LOCK TABLES `paises` WRITE;
-/*!40000 ALTER TABLE `paises` DISABLE KEYS */;
-/*!40000 ALTER TABLE `paises` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `planocontas`
---
-
-DROP TABLE IF EXISTS `planocontas`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `planocontas` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `plano_contas` (
+  `id` bigint(20) NOT NULL,
+  `tipo` varchar(20) NOT NULL,
   `conta` int(11) NOT NULL,
   `descricao` varchar(20) NOT NULL,
-  `saldo` decimal(12,2) NOT NULL,
-  `sigla` int(11) NOT NULL,
-  `subconta` int(11) NOT NULL,
-  `tipo` varchar(20) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  UNIQUE KEY `UK_7yth8a1xm942540p0ge53ura7` (`conta`),
-  UNIQUE KEY `UK_qnqr7vvg6rdp6x9me40omyiy3` (`descricao`),
-  UNIQUE KEY `UK_3fjwc3mwpuf7ghb2f4hdsgj1j` (`sigla`),
-  UNIQUE KEY `UK_nh4bpigmie99s6y5to5w6i17x` (`subconta`),
-  UNIQUE KEY `UK_rut763y18da01jiom84btcurn` (`tipo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `sigla_situacao` char(1) NOT NULL,
+  `saldo` decimal(11,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- Dumping data for table `planocontas`
+-- Despejando dados para a tabela `plano_contas`
 --
 
-LOCK TABLES `planocontas` WRITE;
-/*!40000 ALTER TABLE `planocontas` DISABLE KEYS */;
-/*!40000 ALTER TABLE `planocontas` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `plano_contas` (`id`, `tipo`, `conta`, `descricao`, `sigla_situacao`, `saldo`) VALUES
+(6, '1-ATIVO', 11, 'CAIXA', 'D', 0.00),
+(7, '1-ATIVO', 12, 'CONTAS A RECEBER', 'D', 0.00),
+(8, '1-ATIVO', 13, 'ESTOQUE', 'D', 10.15),
+(9, '1-ATIVO', 15, 'BANCOS', 'D', 50.00),
+(10, '2-PASSIVO', 20, 'CONTAS A PAGAR', 'C', 54.00),
+(11, '3-DESPESAS', 30, 'ENERGIA ELÉTRICA', 'D', 6400.00);
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `situacoes`
+-- Estrutura para tabela `situacoes`
 --
 
-DROP TABLE IF EXISTS `situacoes`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `situacoes` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
-  `tipoNome` varchar(20) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  UNIQUE KEY `UK_fmgsbqmhq4nla2ua6r5gl1njo` (`tipoNome`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `id` bigint(20) NOT NULL,
+  `tipo_nome` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- Dumping data for table `situacoes`
+-- Despejando dados para a tabela `situacoes`
 --
 
-LOCK TABLES `situacoes` WRITE;
-/*!40000 ALTER TABLE `situacoes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `situacoes` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `situacoes` (`id`, `tipo_nome`) VALUES
+(5, 'APOSENTADO'),
+(6, 'ATIVO'),
+(7, 'DEMITIDO'),
+(8, 'LICENÇA');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `tipoveiculo`
+-- Estrutura para tabela `tipos_niveis`
 --
 
-DROP TABLE IF EXISTS `tipoveiculo`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tipoveiculo` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
-  `especie` varchar(80) NOT NULL,
-  `nome` varchar(80) NOT NULL,
-  `tracao` varchar(80) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  UNIQUE KEY `UK_fipln6im7baf31f8ehbp4eo85` (`especie`),
-  UNIQUE KEY `UK_k31o8wemft4y085cwpd4yf6qf` (`nome`),
-  UNIQUE KEY `UK_14waxjie5qa4xyigy173w8o5n` (`tracao`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `tipos_niveis` (
+  `id` bigint(20) NOT NULL,
+  `nome_nivel` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
--- Dumping data for table `tipoveiculo`
+-- Despejando dados para a tabela `tipos_niveis`
 --
 
-LOCK TABLES `tipoveiculo` WRITE;
-/*!40000 ALTER TABLE `tipoveiculo` DISABLE KEYS */;
-/*!40000 ALTER TABLE `tipoveiculo` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `tipos_niveis` (`id`, `nome_nivel`) VALUES
+(1, 'admin'),
+(2, 'manutenção'),
+(5, 'multas'),
+(6, 'financeiro'),
+(7, 'viagens'),
+(9, 'pessoal');
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `usuarios`
+-- Estrutura para tabela `tipos_veiculos`
 --
 
-DROP TABLE IF EXISTS `usuarios`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tipos_veiculos` (
+  `id` bigint(20) NOT NULL,
+  `tipo_de_veiculo` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Despejando dados para a tabela `tipos_veiculos`
+--
+
+INSERT INTO `tipos_veiculos` (`id`, `tipo_de_veiculo`) VALUES
+(2, 'Caminhão'),
+(1, 'Pickup');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `usuarios`
+--
+
 CREATE TABLE `usuarios` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`codigo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `id` int(11) NOT NULL,
+  `nome` varchar(60) NOT NULL,
+  `cpf` varchar(20) NOT NULL,
+  `usuario` varchar(50) NOT NULL,
+  `senha` varchar(255) NOT NULL,
+  `fk_id_nivel` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- Dumping data for table `usuarios`
+-- Despejando dados para a tabela `usuarios`
 --
 
-LOCK TABLES `usuarios` WRITE;
-/*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-/*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `usuarios` (`id`, `nome`, `cpf`, `usuario`, `senha`, `fk_id_nivel`) VALUES
+(8, 'JR', '000.000.000-00', 'admin@admin.com', '123', 1),
+(12, 'Jr Manutenção', '213.1', 'osmar.saraiva@gmail.com', '123', 2),
+(13, 'Osmar', '030.834.156-1', 'admin@admin.com', '123', 2);
+
+-- --------------------------------------------------------
 
 --
--- Table structure for table `veiculos`
+-- Estrutura para tabela `veiculos`
 --
 
-DROP TABLE IF EXISTS `veiculos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `veiculos` (
-  `codigo` bigint(20) NOT NULL AUTO_INCREMENT,
-  `ano` date NOT NULL,
-  `dataCompra` date NOT NULL,
-  `dataFabricacao` date NOT NULL,
-  `dataInicio` date NOT NULL,
-  `kmInicial` int(11) NOT NULL,
+  `id` bigint(20) NOT NULL,
+  `fk_tipo_veiculo_id` bigint(20) NOT NULL,
   `marca` varchar(80) NOT NULL,
   `modelo` varchar(80) NOT NULL,
-  `obs` varchar(150) DEFAULT NULL,
+  `ano_modelo` int(4) NOT NULL,
+  `ano_fabricacao` int(4) NOT NULL,
+  `renavam` int(20) NOT NULL,
   `placas` varchar(80) NOT NULL,
-  `renavam` int(11) NOT NULL,
-  `tipoAquisicao` varchar(80) NOT NULL,
-  `valor` decimal(12,2) NOT NULL,
-  `empresa_codigo` bigint(20) NOT NULL,
-  `frota_codigo` bigint(20) NOT NULL,
-  `situacao_codigo` bigint(20) NOT NULL,
-  `tipoVeiculo_codigo` bigint(20) NOT NULL,
-  PRIMARY KEY (`codigo`),
-  UNIQUE KEY `UK_1us6ndrx5385qdm58oba5hmcw` (`placas`),
-  UNIQUE KEY `UK_dd27nuxsfww8495ok0hauw2y9` (`renavam`),
-  KEY `FK_fd75av4c7t7sw9n9rpm851fpx` (`empresa_codigo`),
-  KEY `FK_t6pgqiaiigxvnmedexhb46mc5` (`frota_codigo`),
-  KEY `FK_anlml1ixi5s7rcwyukwj8fqe7` (`situacao_codigo`),
-  KEY `FK_glluicf7509bmstyexc72g3y9` (`tipoVeiculo_codigo`),
-  CONSTRAINT `FK_anlml1ixi5s7rcwyukwj8fqe7` FOREIGN KEY (`situacao_codigo`) REFERENCES `situacoes` (`codigo`),
-  CONSTRAINT `FK_fd75av4c7t7sw9n9rpm851fpx` FOREIGN KEY (`empresa_codigo`) REFERENCES `empresas` (`codigo`),
-  CONSTRAINT `FK_glluicf7509bmstyexc72g3y9` FOREIGN KEY (`tipoVeiculo_codigo`) REFERENCES `tipoveiculo` (`codigo`),
-  CONSTRAINT `FK_t6pgqiaiigxvnmedexhb46mc5` FOREIGN KEY (`frota_codigo`) REFERENCES `frotas` (`codigo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `dataCompra` date NOT NULL,
+  `fk_empresas_id` bigint(20) NOT NULL,
+  `fk_frota_id` bigint(20) NOT NULL,
+  `tipo_aquisicao` varchar(50) NOT NULL,
+  `km_inicial` int(11) NOT NULL,
+  `valor` decimal(10,2) NOT NULL,
+  `data_emplacamento` date NOT NULL,
+  `fk_situacoes_id` bigint(20) NOT NULL,
+  `obs` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- Dumping data for table `veiculos`
+-- Despejando dados para a tabela `veiculos`
 --
 
-LOCK TABLES `veiculos` WRITE;
-/*!40000 ALTER TABLE `veiculos` DISABLE KEYS */;
-/*!40000 ALTER TABLE `veiculos` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `veiculos` (`id`, `fk_tipo_veiculo_id`, `marca`, `modelo`, `ano_modelo`, `ano_fabricacao`, `renavam`, `placas`, `dataCompra`, `fk_empresas_id`, `fk_frota_id`, `tipo_aquisicao`, `km_inicial`, `valor`, `data_emplacamento`, `fk_situacoes_id`, `obs`) VALUES
+(22, 2, 'Scania', '21dasdateste', 2001, 124, 32432, 'hfdsa154', '2024-03-17', 2, 2, '2312', 1321, 321312.24, '2024-03-12', 6, '321321'),
+(23, 2, 'fdsa', 'fdsfas', 2019, 2020, 1321, '32132132', '2024-03-17', 2, 2, 'fsaf21teste', 32132121, 215400.00, '2024-03-17', 6, '321321');
 
 --
--- Dumping events for database 'siga_transportes'
+-- Índices para tabelas despejadas
 --
 
 --
--- Dumping routines for database 'siga_transportes'
+-- Índices de tabela `acertos_viagens`
 --
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+ALTER TABLE `acertos_viagens`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_lancar_viagens_id_acerto` (`fk_lancar_viagens_id`),
+  ADD KEY `fk_plano_contas_id_acerto` (`fk_plano_contas_id`);
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+--
+-- Índices de tabela `clientes`
+--
+ALTER TABLE `clientes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_cidades_id` (`fk_cidades_id`);
+
+--
+-- Índices de tabela `documentos`
+--
+ALTER TABLE `documentos`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `doc_veiculos`
+--
+ALTER TABLE `doc_veiculos`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `empresas`
+--
+ALTER TABLE `empresas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_cidade` (`fk_cidades_id`);
+
+--
+-- Índices de tabela `exames`
+--
+ALTER TABLE `exames`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `fornecedores`
+--
+ALTER TABLE `fornecedores`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_cidades` (`fk_cidades_id`);
+
+--
+-- Índices de tabela `frotas`
+--
+ALTER TABLE `frotas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `situcao_fk` (`fk_situacoes_id`),
+  ADD KEY `fk_empresas` (`fk_empresas_id`);
+
+--
+-- Índices de tabela `funcionarios`
+--
+ALTER TABLE `funcionarios`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK_g7p4bs353x28sq9069xrwphe7` (`fk_cidades_id`),
+  ADD KEY `FK_t0ukey4u7380lj0vs5gvudhap` (`fk_situacoes_id`),
+  ADD KEY `fk_empresa_id` (`fk_empresa_id`),
+  ADD KEY `fk_funcao_id` (`fk_funcao_id`);
+
+--
+-- Índices de tabela `funcoes`
+--
+ALTER TABLE `funcoes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `lancar_baixa_veiculos`
+--
+ALTER TABLE `lancar_baixa_veiculos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_veiculos_id` (`fk_veiculos_id`);
+
+--
+-- Índices de tabela `lancar_contabilidade`
+--
+ALTER TABLE `lancar_contabilidade`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK_dy6uec0ucvvq1eniwyk4fltiy` (`fk_plano_contas_id`),
+  ADD KEY `FK_p3afl2c4etqqj1kbawusk2ypt` (`fk_documento_id`),
+  ADD KEY `FK_cskm7ts2fpctppnbkr8paqut9` (`fk_empresa_id`),
+  ADD KEY `FK_3bim69q3srfcw7r38ymii6hw7` (`fk_fornecedor_id`),
+  ADD KEY `fk_veiculos_id_conta` (`fk_veiculos_id`);
+
+--
+-- Índices de tabela `lancar_ferias`
+--
+ALTER TABLE `lancar_ferias`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `lancar_financeiro_viagens`
+--
+ALTER TABLE `lancar_financeiro_viagens`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_fornecedor_id` (`fk_fornecedor_id`),
+  ADD KEY `fK_documento_id` (`fk_documento_id`),
+  ADD KEY `fk_lancar_viagens_id` (`fk_lancar_viagens_id`),
+  ADD KEY `fk_plano_contas_id` (`fk_plano_contas_id`);
+
+--
+-- Índices de tabela `lancar_viagens`
+--
+ALTER TABLE `lancar_viagens`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK_vmoiw2vk729vpaiy1mbqiddu` (`fk_destino_id`),
+  ADD KEY `FK_6bmjdy748u31bj7h67t4sguoq` (`fk_empresa_id`),
+  ADD KEY `FK_nwy4b86krnhbcqdmlpfrwecn4` (`fk_frota_id`),
+  ADD KEY `FK_i9gvvojss1nphrrfh3keu7a0l` (`fk_motorista_id`),
+  ADD KEY `FK_drkp8j09nsncparffe322twvv` (`fk_origem_id`);
+
+--
+-- Índices de tabela `localidades`
+--
+ALTER TABLE `localidades`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `plano_contas`
+--
+ALTER TABLE `plano_contas`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `situacoes`
+--
+ALTER TABLE `situacoes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `tipos_niveis`
+--
+ALTER TABLE `tipos_niveis`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `tipos_veiculos`
+--
+ALTER TABLE `tipos_veiculos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK_qvxlhmubifx9m0egeyca0j0fh` (`tipo_de_veiculo`);
+
+--
+-- Índices de tabela `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_id_nivel` (`fk_id_nivel`);
+
+--
+-- Índices de tabela `veiculos`
+--
+ALTER TABLE `veiculos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_empresas_id` (`fk_empresas_id`),
+  ADD KEY `fk_frota_id` (`fk_frota_id`),
+  ADD KEY `fk_situaçoes_id` (`fk_situacoes_id`),
+  ADD KEY `fk_tipo_veiculo_id` (`fk_tipo_veiculo_id`);
+
+--
+-- AUTO_INCREMENT para tabelas despejadas
+--
+
+--
+-- AUTO_INCREMENT de tabela `acertos_viagens`
+--
+ALTER TABLE `acertos_viagens`
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `clientes`
+--
+ALTER TABLE `clientes`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+
+--
+-- AUTO_INCREMENT de tabela `documentos`
+--
+ALTER TABLE `documentos`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT de tabela `doc_veiculos`
+--
+ALTER TABLE `doc_veiculos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `empresas`
+--
+ALTER TABLE `empresas`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de tabela `exames`
+--
+ALTER TABLE `exames`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de tabela `fornecedores`
+--
+ALTER TABLE `fornecedores`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de tabela `frotas`
+--
+ALTER TABLE `frotas`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de tabela `funcionarios`
+--
+ALTER TABLE `funcionarios`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT de tabela `funcoes`
+--
+ALTER TABLE `funcoes`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT de tabela `lancar_baixa_veiculos`
+--
+ALTER TABLE `lancar_baixa_veiculos`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `lancar_contabilidade`
+--
+ALTER TABLE `lancar_contabilidade`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `lancar_ferias`
+--
+ALTER TABLE `lancar_ferias`
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `lancar_financeiro_viagens`
+--
+ALTER TABLE `lancar_financeiro_viagens`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `lancar_viagens`
+--
+ALTER TABLE `lancar_viagens`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `localidades`
+--
+ALTER TABLE `localidades`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+
+--
+-- AUTO_INCREMENT de tabela `plano_contas`
+--
+ALTER TABLE `plano_contas`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT de tabela `situacoes`
+--
+ALTER TABLE `situacoes`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT de tabela `tipos_niveis`
+--
+ALTER TABLE `tipos_niveis`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT de tabela `tipos_veiculos`
+--
+ALTER TABLE `tipos_veiculos`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de tabela `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT de tabela `veiculos`
+--
+ALTER TABLE `veiculos`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
+-- Restrições para tabelas despejadas
+--
+
+--
+-- Restrições para tabelas `acertos_viagens`
+--
+ALTER TABLE `acertos_viagens`
+  ADD CONSTRAINT `fk_lancar_viagens_id_acerto` FOREIGN KEY (`fk_lancar_viagens_id`) REFERENCES `lancar_viagens` (`id`),
+  ADD CONSTRAINT `fk_plano_contas_id_acerto` FOREIGN KEY (`fk_plano_contas_id`) REFERENCES `plano_contas` (`id`);
+
+--
+-- Restrições para tabelas `clientes`
+--
+ALTER TABLE `clientes`
+  ADD CONSTRAINT `fk_cidades_id` FOREIGN KEY (`fk_cidades_id`) REFERENCES `localidades` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Restrições para tabelas `empresas`
+--
+ALTER TABLE `empresas`
+  ADD CONSTRAINT `fk_cidade` FOREIGN KEY (`fk_cidades_id`) REFERENCES `localidades` (`id`);
+
+--
+-- Restrições para tabelas `fornecedores`
+--
+ALTER TABLE `fornecedores`
+  ADD CONSTRAINT `fk_cidades` FOREIGN KEY (`fk_cidades_id`) REFERENCES `localidades` (`id`);
+
+--
+-- Restrições para tabelas `frotas`
+--
+ALTER TABLE `frotas`
+  ADD CONSTRAINT `fk_empresas` FOREIGN KEY (`fk_empresas_id`) REFERENCES `empresas` (`id`),
+  ADD CONSTRAINT `situcao_fk` FOREIGN KEY (`fk_situacoes_id`) REFERENCES `situacoes` (`id`);
+
+--
+-- Restrições para tabelas `funcionarios`
+--
+ALTER TABLE `funcionarios`
+  ADD CONSTRAINT `FK_g7p4bs353x28sq9069xrwphe7` FOREIGN KEY (`fk_cidades_id`) REFERENCES `localidades` (`id`),
+  ADD CONSTRAINT `FK_t0ukey4u7380lj0vs5gvudhap` FOREIGN KEY (`fk_situacoes_id`) REFERENCES `situacoes` (`id`),
+  ADD CONSTRAINT `fk_empresa_id` FOREIGN KEY (`fk_empresa_id`) REFERENCES `empresas` (`id`),
+  ADD CONSTRAINT `fk_funcao_id` FOREIGN KEY (`fk_funcao_id`) REFERENCES `funcoes` (`id`);
+
+--
+-- Restrições para tabelas `lancar_baixa_veiculos`
+--
+ALTER TABLE `lancar_baixa_veiculos`
+  ADD CONSTRAINT `fk_veiculos_id` FOREIGN KEY (`fk_veiculos_id`) REFERENCES `veiculos` (`id`);
+
+--
+-- Restrições para tabelas `lancar_contabilidade`
+--
+ALTER TABLE `lancar_contabilidade`
+  ADD CONSTRAINT `FK_3bim69q3srfcw7r38ymii6hw7` FOREIGN KEY (`fk_fornecedor_id`) REFERENCES `fornecedores` (`id`),
+  ADD CONSTRAINT `FK_cskm7ts2fpctppnbkr8paqut9` FOREIGN KEY (`fk_empresa_id`) REFERENCES `empresas` (`id`),
+  ADD CONSTRAINT `FK_dy6uec0ucvvq1eniwyk4fltiy` FOREIGN KEY (`fk_plano_contas_id`) REFERENCES `plano_contas` (`id`),
+  ADD CONSTRAINT `FK_p3afl2c4etqqj1kbawusk2ypt` FOREIGN KEY (`fk_documento_id`) REFERENCES `documentos` (`id`),
+  ADD CONSTRAINT `fk_veiculos_id_conta` FOREIGN KEY (`fk_veiculos_id`) REFERENCES `veiculos` (`id`);
+
+--
+-- Restrições para tabelas `lancar_financeiro_viagens`
+--
+ALTER TABLE `lancar_financeiro_viagens`
+  ADD CONSTRAINT `fK_documento_id` FOREIGN KEY (`fk_documento_id`) REFERENCES `documentos` (`id`),
+  ADD CONSTRAINT `fk_fornecedor_id` FOREIGN KEY (`fk_fornecedor_id`) REFERENCES `fornecedores` (`id`),
+  ADD CONSTRAINT `fk_lancar_viagens_id` FOREIGN KEY (`fk_lancar_viagens_id`) REFERENCES `lancar_viagens` (`id`),
+  ADD CONSTRAINT `fk_plano_contas_id` FOREIGN KEY (`fk_plano_contas_id`) REFERENCES `plano_contas` (`id`);
+
+--
+-- Restrições para tabelas `lancar_viagens`
+--
+ALTER TABLE `lancar_viagens`
+  ADD CONSTRAINT `FK_6bmjdy748u31bj7h67t4sguoq` FOREIGN KEY (`fk_empresa_id`) REFERENCES `empresas` (`id`),
+  ADD CONSTRAINT `FK_i9gvvojss1nphrrfh3keu7a0l` FOREIGN KEY (`fk_motorista_id`) REFERENCES `funcionarios` (`id`),
+  ADD CONSTRAINT `FK_nwy4b86krnhbcqdmlpfrwecn4` FOREIGN KEY (`fk_frota_id`) REFERENCES `frotas` (`id`);
+
+--
+-- Restrições para tabelas `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD CONSTRAINT `fk_id_nivel` FOREIGN KEY (`fk_id_nivel`) REFERENCES `tipos_niveis` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Restrições para tabelas `veiculos`
+--
+ALTER TABLE `veiculos`
+  ADD CONSTRAINT `fk_empresas_id` FOREIGN KEY (`fk_empresas_id`) REFERENCES `empresas` (`id`),
+  ADD CONSTRAINT `fk_frota_id` FOREIGN KEY (`fk_frota_id`) REFERENCES `frotas` (`id`),
+  ADD CONSTRAINT `fk_situaçoes_id` FOREIGN KEY (`fk_situacoes_id`) REFERENCES `situacoes` (`id`),
+  ADD CONSTRAINT `fk_tipo_veiculo_id` FOREIGN KEY (`fk_tipo_veiculo_id`) REFERENCES `tipos_veiculos` (`id`);
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2024-11-13  9:56:08

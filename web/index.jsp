@@ -14,13 +14,13 @@
     try {
 
         st = new Conexao().conectar().createStatement();
-        rs = st.executeQuery("SELECT * FROM usuarios");
+        rs = st.executeQuery("SELECT * FROM usuario");
             //out.print(rs.getRow());
         
             if(rs.last() == false){
                 //CRIAR O USUÁRIO CASO NÃO EXISTA
                 String email = new Config().email;
-                st.executeUpdate("INSERT into usuarios(nome, cpf, email, senha, nivel, siglas) values ('Administrador', '000.000.000-00' , '" + email + "' , '123', 'admin', 'OSJ')");
+                st.executeUpdate("INSERT into usuario (nome, cpf, email, senha, nivel, foto) values ('Administrador', '000.000.000-00' , '" + email + "' , '123', 'admin', 'sem-foto.jpg')");
             }
             
         
@@ -81,7 +81,7 @@
                                     String nomeUsuario = "";
                                     String cpfUsuario = "";
                                     String nivelUsuario = "";
-                                    String siglas = "";
+                                    String fotoUsuario = "";
                                   
                                     String idUsuario = "";
                                     
@@ -92,15 +92,14 @@
                                     try {
 
                                         st = new Conexao().conectar().createStatement();
-                                        rs = st.executeQuery("SELECT * FROM usuarios where email = '" + email + "' and senha = '" + senha + "'");
+                                        rs = st.executeQuery("SELECT * FROM usuario where email = '" + email + "' and senha = '" + senha + "'");
                                         while (rs.next()) {
                                             user = rs.getString(4);
                                             pass = rs.getString(5);
                                             nomeUsuario = rs.getString(2);
                                             cpfUsuario = rs.getString(3);
                                             nivelUsuario = rs.getString(6);
-                                            siglas = rs.getString(7);
-                                            
+                                            fotoUsuario = rs.getString(7);
                                             idUsuario = rs.getString(1);
                                             rs.last();
                                             i = rs.getRow();
@@ -118,19 +117,30 @@
                                             session.setAttribute("nomeUsuario", nomeUsuario);
                                             session.setAttribute("cpfUsuario", cpfUsuario);
                                             session.setAttribute("nivelUsuario", nivelUsuario);
+                                            session.setAttribute("fotoUsuario", fotoUsuario);
+                                            session.setAttribute("idUsuario", idUsuario);
                                            
                                             //session.setAttribute("idUsuario", idUsuario);
                                             if(nivelUsuario.equals("admin")){
                                                response.sendRedirect("painel-admin"); 
                                             }
                                             
-                                             //if(nivelUsuario.equals("corretor")){
-                                              // response.sendRedirect("painel-corretor"); 
+                                             //if(nivelUsuario.equals("financeiro")){
+                                              // response.sendRedirect("painel-financeiro"); 
                                             //}
                                              
-                                            // if(nivelUsuario.equals("tesoureiro")){
-                                               //response.sendRedirect("painel-tesouraria"); 
+                                            // if(nivelUsuario.equals("contador")){
+                                               //response.sendRedirect("painel-contabilidade"); 
                                             //}
+                                            
+                                              // if(nivelUsuario.equals("manutenção")){
+                                               //response.sendRedirect("painel-manutencao"); 
+                                            //}
+                                            
+                                                 // if(nivelUsuario.equals("multas")){
+                                               //response.sendRedirect("painel-multas"); 
+                                            //
+                                            
                                             
                                         } else {
                                             out.println("Dados Incorretos");
