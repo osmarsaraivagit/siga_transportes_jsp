@@ -6,28 +6,27 @@
 
 
 <%
-    Statement st = null;
+   Statement st = null;
     ResultSet rs = null;
 
     String idUsuario = (String) session.getAttribute("idUsuario");
     String nivelUsuario = (String) session.getAttribute("nivelUsuario");
-    
-    String nome = "";
-    String cpf = "";
+
     String email = "";
     String senha = "";
-    String siglas = "";
-    
+    String nome = "";
+    String img = "";
+    String cpf = "";
 
     try {
         st = new Conexao().conectar().createStatement();
-        rs = st.executeQuery("SELECT * FROM usuarios where id = '" + idUsuario + "' ");
+        rs = st.executeQuery("SELECT * FROM usuario where id = '" + idUsuario + "' ");
         while (rs.next()) {
             email = rs.getString(4);
             senha = rs.getString(5);
             nome = rs.getString(2);
             cpf = rs.getString(3);
-            siglas = rs.getString(7);
+            img = rs.getString(7);
 
         }
     } catch (Exception e) {
@@ -43,14 +42,34 @@
 
 <%//variaveis para o menu
     String pag = request.getParameter("pag");
-    String menu1 = "corretores";
-    String menu2 = "tesoureiros";
-    String menu3 = "cidade";
-    String menu4 = "bairro";
-    String menu5 = "tipo";
-    String menu6 = "tarefas";
-    String menu7 = "vendas";
-    String menu8 = "alugueis";
+    String menu1 = "usuarios";
+    String menu2 = "funcionarios";
+    String menu3 = "socios";
+    String menu4 = "cidade";
+    String menu5 = "estados";
+    String menu6 = "pais";
+    String menu7 = "origens";
+    String menu8 = "destinos";
+    
+    String menu9 = "veiculos";
+    String menu10 = "tipos";
+    String menu11 = "frotas";
+    String menu12 = "empresas";
+    String menu13 = "fornecedores";
+    String menu14 = "clientes"; 
+
+    String menu15 = "situacoes";
+    
+    String menu16 = "cronograma";
+    String menu17 = "imoveis";
+    String menu18 = "veiculos";
+    String menu19 = "graficos";
+    String menu20 = "home";
+    
+
+
+
+
 
 %>
 
@@ -83,7 +102,7 @@
         <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
         
          <link rel="shortcut icon" href="../../img/favicon0.ico" type="image/x-icon">
-    <link rel="icon" href="../../img/favicon0.ico" type="image/x-icon">
+    <link rel="icon" href="../img/favicon0.ico" type="image/x-icon">
 
     </head>
 
@@ -117,35 +136,64 @@
 
 
                 <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                    <a class="nav-link collapsed"  href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                         <i class="fas fa-users"></i>
                         <span>Pessoas</span>
                     </a>
                     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">PESSOAS:</h6>
-                            <a class="collapse-item" href="index.jsp?pag=<%=menu1%>">Corretores</a>
-                            <a class="collapse-item" href="index.jsp?pag=<%=menu2%>">Tesoureiros</a>
+                            <h6 class="collapse-header">Pessoas</h6>
+                            <a class="collapse-item" href="index.jsp?pag=<%=menu1%>">Usuários</a>
+                            <a class="collapse-item" href="index.jsp?pag=<%=menu2%>">Funcionários</a>
+                            <a class="collapse-item" href="index.jsp?pag=<%=menu3%>">Sócios</a>
                         </div>
                     </div>
                 </li>
-
+                
+                       
                 <!-- Nav Item - Utilities Collapse Menu -->
                 <li class="nav-item">
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
-                        <i class="fas fa-home"></i>
-                        <span>Opções Imóveis</span>
+                        <i class="fa fa-id-card"></i>
+                        <span>Cadastros Gerais</span>
                     </a>
                     <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
-                            <h6 class="collapse-header">Dados Imóveis:</h6>
-                            <a class="collapse-item" href="index.jsp?pag=<%=menu3%>">Cidade</a>
-                            <a class="collapse-item" href="index.jsp?pag=<%=menu4%>">Bairro</a>
-                            <a class="collapse-item" href="index.jsp?pag=<%=menu5%>">Tipo</a>
-
+                            <h6 class="collapse-header">Localidades</h6>
+                            <a class="collapse-item" href="index.jsp?pag=<%=menu4%>">Cidades</a>
+                            <a class="collapse-item" href="index.jsp?pag=<%=menu5%>">Estados</a>
+                            <a class="collapse-item" href="index.jsp?pag=<%=menu6%>">País</a>
+                            <a class="collapse-item" href="index.jsp?pag=<%=menu7%>">Origens</a>
+                            <a class="collapse-item" href="index.jsp?pag=<%=menu8%>">Destinos</a>
                         </div>
+                          <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">Veículo</h6>
+                            <a class="collapse-item" href="index.jsp?pag=<%=menu9%>">Veiculos</a>
+                            <a class="collapse-item" href="index.jsp?pag=<%=menu10%>">Tipos</a>
+                            <a class="collapse-item" href="index.jsp?pag=<%=menu11%>">Frotas</a>
+            
+                        </div>
+                         
+                           <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <h6 class="collapse-header">Minha Empresa</h6>
+                            <a class="collapse-item" href="index.jsp?pag=<%=menu12%>">Empresas</a>
+                            <a class="collapse-item" href="index.jsp?pag=<%=menu13%>">Fornecedores</a>
+                            <a class="collapse-item" href="index.jsp?pag=<%=menu14%>">Clientes</a>
+            
+                        </div>
+                           
                     </div>
                 </li>
+                
+                     <li class="nav-item">
+                    <a class="nav-link" href="index.jsp?pag=<%=menu15%>">
+                        <i class="fas fa-fw fa-chart-area"></i>
+                        <span>Situações Gerais</span></a>
+                </li>
+                
+                
 
                 <!-- Divider -->
                 <hr class="sidebar-divider">
@@ -159,24 +207,39 @@
 
                 <!-- Nav Item - Charts -->
                 <li class="nav-item">
-                    <a class="nav-link" href="index.jsp?pag=<%=menu6%>">
-                        <i class="fas fa-fw fa-chart-area"></i>
-                        <span>Agenda Corretores</span></a>
+                    <a class="nav-link" href="index.jsp?pag=<%=menu16%>">
+                       <i class="far fa-calendar-check"></i>
+                        <span>Cronograma</span></a>
                 </li>
 
                 <!-- Nav Item - Tables -->
                 <li class="nav-item">
-                    <a class="nav-link" href="index.jsp?pag=<%=menu7%>">
-                        <i class="fas fa-fw fa-table"></i>
-                        <span>Imóveis Vendidos</span></a>
+                    <a class="nav-link" href="index.jsp?pag=<%=menu17%>">
+                        <i class="fas fa-home"></i>
+                        <span>Imóveis</span></a>
                 </li>
                 
                 <li class="nav-item">
-                    <a class="nav-link" href="index.jsp?pag=<%=menu8%>">
-                        <i class="fas fa-fw fa-table"></i>
-                        <span>Imóveis Alugados</span></a>
+                    <a class="nav-link" href="index.jsp?pag=<%=menu18%>">
+                        <i class="fa fa-truck"></i>
+                        <span>Veículos</span></a>
                 </li>
-
+                
+                     <li class="nav-item">
+                    <a class="nav-link" href="index.jsp?pag=<%=menu19%>">
+                      <i class="fas fa-signal"></i>
+                        <span>Gráficos</span></a>
+                </li>
+                
+                       <!-- Nav Item - Charts -->
+                <li class="nav-item">
+                    <a class="nav-link" href="index.jsp?pag=<%=menu20%>">
+                       <i class="fas fa-home"></i>
+                        <span>Home</span></a>
+                </li>
+                
+                
+                
                 <!-- Divider -->
                 <hr class="sidebar-divider d-none d-md-block">
 
@@ -240,7 +303,8 @@
                     <div class="container-fluid">
 
                         <% if (pag == null) { %>
-                        <jsp:include page="home.jsp" />
+                        
+               
                         <% } else if (pag.equals(menu1)) {%>
                         <jsp:include page='<%=menu1 + ".jsp"%>' />
                         <% } else if (pag.equals(menu2)) {%>
@@ -260,6 +324,9 @@
                         
                         <% } else if (pag.equals(menu8)) {%>
                         <jsp:include page='<%=menu8 + ".jsp"%>' /> 
+                        
+                        <% } else if (pag.equals(menu20)) {%>
+                        <jsp:include page="home.jsp" />
                         
                         <%  } else {%>
                         <jsp:include page="home.jsp" />
@@ -288,7 +355,7 @@
 
 
 
-        <!--  Modal Perfil-->
+          <!--  Modal Perfil-->
         <div class="modal fade" id="ModalPerfil" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
@@ -327,13 +394,13 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-sm-12">
-                                    <div class="col-md-12 form-group">
+                                    <div class="col-md-6 form-group">
                                         <label>Foto</label>
                                         <input value="<%=img%>" type="file" class="form-control-file" id="imagem" name="imagem[]" onchange="carregarImg();">
 
                                     </div>
-                                    <div class="col-md-12 mb-2">
-                                        <img src="../img/profiles/<%=img%>" alt="Carregue sua Imagem" id="target" width="100%">
+                                    <div class="col-md-6 mb-2">
+                                        <img src="../img/profiles/<%=img%>" alt="Carregue sua Imagem" id="target" width="250" height="250">
                                     </div>
                                 </div>
                             </div> 
