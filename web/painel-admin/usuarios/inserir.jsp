@@ -1,11 +1,9 @@
-<%@page import="br.com.sigatransportes.util.Conexao"%>
-<%@page import="br.com.sigatransportes.util.Upload"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+<%@page import="br.com.sigatransportes.util.Upload" %>
+<%@page import="br.com.sigatransportes.util.*"%>
 <%@page import="java.sql.*"%>
 <%@page import="com.mysql.jdbc.Driver"%>
-
-
-
-
 <%
     Statement st = null;
     ResultSet rs = null;
@@ -14,7 +12,9 @@
     String cpf = "";
     String email = "";
     String senha = "";
-    String imagem = null;
+    String nivel = "";
+    String foto = null;
+    
     
     String id = "";
     String antigo = "";
@@ -32,30 +32,28 @@
             cpf = up.getForm().get("cpf").toString();
             email = up.getForm().get("email").toString();
             senha = up.getForm().get("senha").toString();
-            
+            nivel = up.getForm().get("nivel").toString();
             id = up.getForm().get("txtid").toString();
             antigo = up.getForm().get("antigo").toString();
-            
-            imagem = up.getFiles().get(0).toString();
+            foto = up.getFiles().get(0).toString();
             
             
             
         } catch (Exception e) {
-            imagem = "sem-foto.jpg";
-            
+            foto = "sem-foto.jpg";
+
         }
 
         //INSERIR OS DADOS NO BANCO DE DADOS
         try {
             
-            //verificar se o campo está vazio
+            //verificar se o campo Ã© vazio
             if(nome.equals("")){
-                out.print("Preencha o Campo Nome!!");
+                out.print("Preencha o Campo Nome teste!!");
                 return;
             }
             
             if(cpf.equals("")){
-            
                 out.print("Preencha o Campo CPF!!");
                 return;
             }
@@ -68,20 +66,25 @@
             while (rs.next()) {
                 rs.getRow();
                 if (rs.getRow() > 0) {
-                    out.print( "CPF já Cadastrado!");
+                    out.print("CPF JÃ¡ Cadastrado!");
                     return;
                 }
             }
             }
             
-            
-                if(imagem.equals("sem-foto.jpg")){
-                    st.executeUpdate("UPDATE usuarios SET nome = '" + nome + "', cpf = '" + cpf + "', email = '" + email + "', senha = '" + senha + "' WHERE id = '" + id + "'");
+            if(id.equals("")){
+                st.executeUpdate("INSERT into usuarios (nome, cpf, email, senha, nivel, foto) values ('" + nome + "', '" + cpf + "' , '" + email + "' , '" + senha + "', '" + nivel + "', '" + foto + "')");
+                
+            }else{
+                if(foto.equals("sem-foto.jpg")){
+                    st.executeUpdate("UPDATE usuarios SET nome = '" + nome + "', cpf = '" + cpf + "', email = '" + email + "', senha = '" + senha + "', nivel = '" + nivel + "' WHERE id = '" + id + "'");
+                    st.executeUpdate("UPDATE usuarios SET nome = '" + nome + "', cpf = '" + cpf + "', email = '" + email + "' WHERE cpf = '" + antigo + "'");
                 }else{
-                    st.executeUpdate("UPDATE usuarios SET nome = '" + nome + "', cpf = '" + cpf + "', email = '" + email + "', senha = '" + senha + "', foto = '" + imagem + "' WHERE id = '" + id + "'");
+                    st.executeUpdate("UPDATE usuarios SET nome = '" + nome + "', cpf = '" + cpf + "', email = '" + email + "', senha = '" + senha + "', nivel = '" + nivel + "', foto = '" + foto + "' WHERE id = '" + id + "'");
+                    st.executeUpdate("UPDATE usuarios SET nome = '" + nome + "', cpf = '" + cpf + "', email = '" + email + "', foto = '" + foto + "' WHERE cpf = '" + antigo + "'");
                 }
                 
-            
+            }
             
             out.print("Salvo com Sucesso!!");
         } catch (Exception e) {

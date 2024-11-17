@@ -14,13 +14,13 @@
     try {
 
         st = new Conexao().conectar().createStatement();
-        rs = st.executeQuery("SELECT * FROM usuario");
+        rs = st.executeQuery("SELECT * FROM usuarios");
             //out.print(rs.getRow());
         
             if(rs.last() == false){
                 //CRIAR O USUÁRIO CASO NÃO EXISTA
                 String email = new Config().email;
-                st.executeUpdate("INSERT into usuario (nome, cpf, email, senha, nivel, foto) values ('Administrador', '000.000.000-00' , '" + email + "' , '123', 'admin', 'sem-foto.jpg')");
+                st.executeUpdate("INSERT into usuarios (nome, cpf, email, senha, nivel, foto) values ('Administrador', '000.000.000-00' , '" + email + "' , '123', 'admin', 'sem-foto.jpg')");
             }
             
         
@@ -92,7 +92,7 @@
                                     try {
 
                                         st = new Conexao().conectar().createStatement();
-                                        rs = st.executeQuery("SELECT * FROM usuario where email = '" + email + "' and senha = '" + senha + "'");
+                                        rs = st.executeQuery("SELECT * FROM usuarios where email = '" + email + "' and senha = '" + senha + "'");
                                         while (rs.next()) {
                                             user = rs.getString(4);
                                             pass = rs.getString(5);

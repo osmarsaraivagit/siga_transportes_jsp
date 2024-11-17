@@ -20,7 +20,7 @@
 
     try {
         st = new Conexao().conectar().createStatement();
-        rs = st.executeQuery("SELECT * FROM usuario where id = '" + idUsuario + "' ");
+        rs = st.executeQuery("SELECT * FROM usuarios where id = '" + idUsuario + "' ");
         while (rs.next()) {
             email = rs.getString(4);
             senha = rs.getString(5);
@@ -275,7 +275,7 @@
                             <!-- Nav Item - User Information -->
                             <li class="nav-item dropdown no-arrow">
                                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small"><%= nome%></span>
+                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small"><%=nome%></span>
                                     <img class="img-profile rounded-circle" src="../img/profiles/<%=img%>">
 
                                 </a>
@@ -390,7 +390,7 @@
 
                                     <div class="form-group">
                                         <label >Senha</label>
-                                        <input value="" type="password" class="form-control" id="text" name="senha" placeholder="Senha">
+                                        <input value="<%=senha%>" type="password" class="form-control" id="text" name="senha" placeholder="Senha">
                                     </div>
                                 </div>
                                 <div class="col-md-6 col-sm-12">
@@ -409,7 +409,7 @@
 
                             <small>
                                 <div id="mensagem" class="mr-4">
-
+  
                                 </div>
                             </small>
 
@@ -539,4 +539,4 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.min.js"></script>
 
-<script src="../../js/mascara.js"></script>
+<script src="../js/mascara.js"></script>
